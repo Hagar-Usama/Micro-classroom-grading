@@ -13,9 +13,38 @@ ORG 100H
 
 .DATA
 ;GRADES[10] = 1,25,30,....
-GRADES : DB   17,30,15,24,25,22,27,13,12,18
+GRADES : DB   17,30,15,24,25,22,27,13,12,18 
 ;12,30,15,24,25,22,27,13,12,18,20,17,10,4,19,29,28,21,11,5,0,9,7,18,26
 .CODE
+
+MOV   CX , 9    
+MOV   SI , 00 ; AS COUNTER
+
+
+BUBBLE:
+    CMP CX,SI
+    JZ  NEXT  
+    MOV AL, GRADES[SI]
+    MOV BL , GRADES[SI + 1]
+    CMP AL , BL
+    JB  SWAP
+    ADD SI , 1
+    JMP BUBBLE
+    
+    SWAP:
+    MOV GRADES[SI],BL
+    MOV GRADES[SI+1],AL 
+    ADD SI,1
+    JMP BUBBLE
+    
+    NEXT:
+    MOV SI,00
+    SUB CX,1
+    CMP CX,0
+    JNZ BUBBLE
+
+
+
 MOV   CX , 10    
 MOV   SI , 00 ; AS COUNTER
 
@@ -39,7 +68,7 @@ PRINT:
     ADD DL,30H
     INT 21H
     
-    MOV DL, 20H ; SPACE
+    MOV DL, 09H ; SPACE: 20H , TAB:09H
     INT 21H
     
     INC SI
