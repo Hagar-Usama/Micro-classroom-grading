@@ -28,7 +28,7 @@ IDS DW ?
 
 
 
-.code
+.CODE
 
 
 ;************** here my main function ***********************
@@ -40,6 +40,17 @@ MAIN PROC
  MOV CX,5 ; 5 GD2
  CALL READ_GRD   
               
+ PRINT MSG1
+ MOV SI,00
+ MOV CX,10 ; N=5 >> CX =10 
+ CALL READ_ID  
+    
+ 
+ PRINT MSG1
+ MOV SI,00
+ MOV CX,10 ; N=5 >> CX =10 
+ CALL WRITE_ID  
+ 
               
  MOV   CX , 4 ;N = 25    
  MOV   SI , 00 ; AS COUNTER
@@ -48,8 +59,9 @@ MAIN PROC
  PRINT MSG2            
  MOV   CX , 5 ;N = 25    
  MOV   SI , 00 ; AS COUNTER            
- CALL WRITE   
-    
+ CALL WRITE
+ 
+ 
     
 ;RET   
 MAIN ENDP
@@ -151,6 +163,137 @@ RET
 READ_GRD ENDP
 ;***************************************************
 
+READ_ID PROC
+    
+PUSH AX
+PUSH BX
+PUSH DX
+
+RD_IDS:
+
+        
+;GET THE MOST SIGNIFICANT DIGIT:
+        MOV     AH, 01H
+        INT     21H
+        MOV     BH,AL
+       
+        
+;GET THE LEAST SIGNIFICANT DIGIT :
+        
+        
+        MOV     AH,01H
+        INT     21H
+        MOV     BL,AL   
+        
+        
+        MOV     AX,BX
+        SUB     AX,3030H
+        AAD
+        MOV     IDS[SI],AX
+        
+
+;GET THE MOST SIGNIFICANT GD1IT:
+        
+        MOV     AH, 01H
+        INT     21H
+        MOV     BH,AL
+       
+        
+;GET THE LEAST SIGNIFICANT GD1IT :        
+        
+        MOV     AH, 01H
+        INT     21H
+        MOV     BL,AL   
+        
+        
+        MOV     AX,BX
+        SUB     AX,3030H
+        AAD
+        MOV     IDS[SI+1],AX
+
+
+;INCREMENT THE INDEX     
+        ADD     SI,2        
+        
+        MOV     AH,02H
+        MOV     DL, 20H ; SPACE: 20H , TAB:09H
+        INT     21H
+        
+        
+       
+        CMP     SI,CX
+        JNE     RD_IDS
+
+
+
+
+POP DX
+POP BX
+POP AX
+
+
+RET
+READ_ID ENDP
+
+;***************************************************
+
+WRITE_ID PROC
+    PUSH AX
+    PUSH BX
+    PUSH DX
+    
+    
+
+  ;PRINT GRADES IN ORDER 
+PRINT1:
+    CMP CX,SI
+    JZ  EXIT
+    MOV AX,IDS[SI]
+    AAM
+    MOV BX,AX
+    MOV DL,BH
+    ADD DL,30H
+    MOV AH,2
+    INT 21H
+           
+           
+    MOV DL,BL
+    ADD DL,30H
+    INT 21H
+    
+    MOV AX,IDS[SI+1]
+    AAM
+    MOV BX,AX
+    MOV DL,BH
+    ADD DL,30H
+    MOV AH,2
+    INT 21H
+           
+           
+    MOV DL,BL
+    ADD DL,30H
+    INT 21H
+    
+    
+    
+    MOV DL, 09H ; SPACE: 20H , TAB:09H
+    INT 21H
+    
+    
+    ADD SI , 2
+    JMP PRINT1    
+
+EXIT1:    
+
+POP DX
+POP BX
+POP AX 
+    
+RET
+WRITE_ID ENDP
+
+;***************************************
+
 SORT PROC
 PUSH AX
 PUSH BX
@@ -190,7 +333,8 @@ POP BX
 POP AX
     
 RET
-END SORT
+SORT ENDP
+;END SORT
              
 
 END MAIN
