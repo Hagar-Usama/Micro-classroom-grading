@@ -5,12 +5,26 @@
 .MODEL SMALL
 ;.STACK 100H
 ORG 100H
+      
+PRINT MACRO MSG
+    ;PUSH AX
+    LEA  DX,MSG
+    MOV  AH,9
+    INT  21H
+    ;POP  AX
+ENDM
+
 
 .DATA
+MSG0 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER Grades: $'
+MSG1 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER IDs: $'
+MSG2 DB 0Dh,0Ah, 0Dh,0Ah, 'SORTED ARRAY: $'
+SPACE DB ' $'
 STR1 DB 'HELLO$'
 STR2 DB 'HOW ARE YOU?$'
 STR3 DB 'GOOD TO SEE YOU$'
 GRADES DB ?
+IDS DW ?
 
 
 
@@ -19,8 +33,21 @@ GRADES DB ?
 
 ;************** here my main function ***********************
 MAIN PROC
+ 
+ PRINT MSG0   
     
- CALL READ   
+ MOV SI,00
+ MOV CX,5 ; 5 GD2
+ CALL READ_GRD   
+              
+              
+ MOV   CX , 4 ;N = 25    
+ MOV   SI , 00 ; AS COUNTER
+ CALL  SORT
+ 
+ PRINT MSG2            
+ MOV   CX , 5 ;N = 25    
+ MOV   SI , 00 ; AS COUNTER            
  CALL WRITE   
     
     
@@ -28,11 +55,14 @@ MAIN PROC
 MAIN ENDP
 
 
+
 WRITE PROC
 ;*****************************************
-    MOV   CX , 5 ;N = 25    
-    MOV   SI , 00 ; AS COUNTER
-
+    PUSH AX
+    PUSH BX
+    PUSH DX
+    
+    
 
   ;PRINT GRADES IN ORDER 
 PRINT:
@@ -58,16 +88,21 @@ PRINT:
     JMP PRINT    
 
 EXIT:    
+
+POP DX
+POP BX
+POP AX 
     
 RET
 WRITE ENDP
 
+;***************************************
 
-READ PROC
- 
- MOV SI,00
- MOV CX,5 ; 5 GD2 
-                
+READ_GRD PROC
+  
+ PUSH AX
+ PUSH BX
+ PUSH DX               
                 
  RD_INPUT:
  ;GET THE LEAST SIGNIFICANT GD1IT:
@@ -107,9 +142,55 @@ READ PROC
         MOV     DL, 0AH ; SPACE: 20H , TAB:09H
         INT     21H
    
-RET    
-READ ENDP
 
+POP DX
+POP BX
+POP AX
+
+RET    
+READ_GRD ENDP
+;***************************************************
+
+SORT PROC
+PUSH AX
+PUSH BX
+PUSH DX               
+
+;MOV CX,4 ; N-1 : 25-1 = 24
+;MOV SI,00
+
+BUBBLE:
+    CMP CX,SI
+    JZ  NEXT  
+    MOV AL, GRADES[SI]
+    MOV BL , GRADES[SI + 1]
+    CMP AL , BL
+    JB  SWAP
+    ADD SI , 1
+    JMP BUBBLE
+    
+    SWAP:
+    ;SWAPPING GRADES
+    MOV GRADES[SI],BL
+    MOV GRADES[SI+1],AL
+                       
+ 
+    ADD SI,1
+    JMP BUBBLE
+    
+    NEXT:
+    MOV SI,00
+    SUB CX,1
+    CMP CX,0
+    JNZ BUBBLE
+   
+
+POP DX
+POP BX
+POP AX
+    
+RET
+END SORT
              
 
 END MAIN
