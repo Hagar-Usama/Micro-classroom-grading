@@ -33,7 +33,7 @@ GRADES DB ?
 .CODE
 
 
-;************** here my main function ***********************
+;************** MAIN FUNCTION ***********************
 MAIN PROC
   
   CALL CLRSCR
@@ -41,7 +41,6 @@ MAIN PROC
  PRINT MSG4
  ;READ IDS
  PRINT MSG1  
- 
  ;N
  MOV SI,05
  ;N*2
