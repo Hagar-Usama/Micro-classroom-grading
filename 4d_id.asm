@@ -16,8 +16,9 @@ MSG1 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Enter IDs:   $'
 MSG2 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Sorted Grades: $'  
 MSG3 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* IDs           : $'
 MSG4 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*$'
-
-MSG6 DB 0Dh,0Ah, 0Dh,0Ah, ' *..*..*..*..*..*..*..* END OF PROGRAM *..*..*..*..*..*..*..*$'
+MSG5 DB 0Dh,0Ah, 0Dh,0Ah, ' *..*..*..*..*..*..*..* END OF PROGRAM *..*..*..*..*..*..*..*$'
+MSG6 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*  $'
+MSG7 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*. Grade * ID.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*$'
 SPACE DB ' $'
 GRADES DB ?
 
@@ -29,44 +30,55 @@ GRADES DB ?
 ;************** here my main function ***********************
 MAIN PROC
   
- MOV BL ,5
  
  PRINT MSG4
  
  
  ;READ IDS
  PRINT MSG1      
+ ;N
  MOV SI,05
+ ;N*2
  MOV CX,10
  CALL READ_ID   
   
  ;READ GRADES 
  PRINT MSG0      
  MOV SI,00
+ ;N
  MOV CX,05
  CALL READ_GRD   
  
  PRINT MSG4
  
  ;SORT GRADES (BUBBLE)                          
- MOV   CX , 4     
  MOV   SI , 00 
+ ;N-1
+ MOV   CX , 4     
  CALL  SORT
  
- 
- ;PRINT SORTED GRADES
- PRINT MSG3            
- MOV   SI , 05 
- MOV   CX , 10               
- CALL WRITE_ID
- 
- ;PRINT SORTED GRADES
- PRINT MSG2            
+ ;PRINT VERTICAL STYLE
+ PRINT MSG7
  MOV   SI , 00 
- MOV   CX , 05             
- CALL WRITE_GRD
+ ;N
+ MOV   CX , 05    
+ CALL WRITE_ALL 
  
- PRINT MSG6   
+ ;PRINT HORIZONTAL STYLE
+ ;PRINT IDS
+ ;PRINT MSG3            
+ ;MOV   SI , 05 
+ ;MOV   CX , 10               
+ ;CALL WRITE_ID
+ 
+ ;PRINT SORTED GRADES
+ ;PRINT MSG2            
+ ;MOV   SI , 00 
+ ;MOV   CX , 05             
+ ;CALL WRITE_GRD
+ 
+ PRINT MSG4 
+ PRINT MSG5   
 ;RET   
 MAIN ENDP
 
@@ -166,7 +178,75 @@ RET
 WRITE_ID ENDP
 
 ;***************************************
+WRITE_ALL PROC
 
+    PUSH AX
+    PUSH BX
+    PUSH DX
+    
+    
+
+  ;PRINT GRADES IN ORDER 
+PRNT_ALL:
+    CMP CX,SI
+    JZ  EXIT_ALL
+    
+    PRINT MSG6
+    
+    MOV AL,GRADES[SI]
+    AAM
+    MOV BX,AX
+    MOV DL,BH
+    ADD DL,30H
+    MOV AH,2
+    INT 21H
+    
+    MOV DL,BL
+    ADD DL,30H
+    INT 21H
+    
+    MOV DL, 09H ; SPACE: 20H , TAB:09H
+    INT 21H
+    
+    ;SHIFT BY N
+    MOV AL,GRADES[SI + 5]
+    AAM
+    MOV BX,AX
+    MOV DL,BH
+    ADD DL,30H
+    MOV AH,2
+    INT 21H
+    
+    MOV DL,BL
+    ADD DL,30H
+    INT 21H
+    
+    MOV AL,GRADES[SI+10]
+    AAM
+    MOV BX,AX
+    MOV DL,BH
+    ADD DL,30H
+    MOV AH,2
+    INT 21H
+    
+    MOV DL,BL
+    ADD DL,30H
+    INT 21H
+    
+     
+    
+    INC SI
+    JMP PRNT_ALL    
+
+EXIT_ALL:    
+
+POP DX
+POP BX
+POP AX 
+    
+RET
+WRITE_ALL ENDP
+;********************************************************************
 READ_GRD PROC
   
  PUSH AX
