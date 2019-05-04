@@ -18,11 +18,9 @@ ENDM
 .DATA
 MSG0 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER Grades: $'
 MSG1 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER IDs: $'
-MSG2 DB 0Dh,0Ah, 0Dh,0Ah, 'SORTED ARRAY: $'
+MSG2 DB 0Dh,0Ah, 0Dh,0Ah, 'SORTED ARRAY: $'  
+MSG3 DB 0Dh,0Ah, 0Dh,0Ah, 'ID           : $'
 SPACE DB ' $'
-STR1 DB 'HELLO$'
-STR2 DB 'HOW ARE YOU?$'
-STR3 DB 'GOOD TO SEE YOU$'
 GRADES DB ?
 IDS DW ?
 
@@ -63,10 +61,14 @@ MAIN PROC
  CALL  SORT
  
  PRINT MSG2            
- MOV   CX , 10 ;N = 25    
+ MOV   CX , 05 ;N = 25    
  MOV   SI , 00 ; AS COUNTER            
  CALL WRITE
  
+ PRINT MSG3            
+ MOV   CX , 10 ;N = 25    
+ MOV   SI , 05 ; AS COUNTER            
+ CALL WRITE
  
     
 ;RET   
@@ -299,7 +301,42 @@ RET
 WRITE_ID ENDP
 
 ;***************************************
+SWAP_GRD PROC
+PUSH AX
+PUSH BX
+PUSH DX    
+MOV GRADES[SI],BL
+MOV GRADES[SI+1],AL
 
+
+POP DX
+POP BX
+POP AX     
+RET
+SWAP_GRD ENDP
+;***************************************
+SWAP_ID PROC
+PUSH AX
+PUSH BX
+PUSH DX    
+
+; SI + N : WHERE N IS THE SIZE OF ARRAY WHICH IS 5
+MOV AL, GRADES[SI + 5]
+MOV BL , GRADES[SI + 6]
+
+MOV GRADES[SI + 5],BL
+MOV GRADES[SI+ 6],AL
+
+
+POP DX
+POP BX
+POP AX     
+RET
+SWAP_ID ENDP
+
+;***************************************
+
+    
 SORT PROC
 PUSH AX
 PUSH BX
@@ -320,10 +357,8 @@ BUBBLE:
     
     SWAP:
     ;SWAPPING GRADES
-    MOV GRADES[SI],BL
-    MOV GRADES[SI+1],AL
-                       
- 
+    CALL SWAP_GRD                   
+    CALL SWAP_ID
     ADD SI,1
     JMP BUBBLE
     
