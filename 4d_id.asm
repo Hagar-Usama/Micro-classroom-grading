@@ -3,18 +3,16 @@
  ;*********     PROJECT #0      ****************************************************
  ;*********     HAGAR USAMA     ****************************************************
  ;*********       4970          ****************************************************
- ;*********   MAY , 5 , 00:44   ****************************************************
+ ;*********   MAY , 5 , 01:48   ****************************************************
  ;**********************************************************************************
  ;**********************************************************************************
 
 ORG 100H
       
 PRINT MACRO MSG
-    ;PUSH AX
     LEA  DX,MSG
     MOV  AH,9
     INT  21H
-    ;POP  AX
 ENDM
 
 
@@ -38,17 +36,18 @@ GRADES DB ?
 ;************** here my main function ***********************
 MAIN PROC
   
- 
+  CALL CLRSCR
+           
  PRINT MSG4
- 
- 
  ;READ IDS
- PRINT MSG1      
+ PRINT MSG1  
+ 
  ;N
  MOV SI,05
  ;N*2
  MOV CX,10
  CALL READ_ID   
+ 
   
  ;READ GRADES 
  PRINT MSG0      
@@ -465,7 +464,18 @@ POP AX
 RET
 SORT ENDP
 ;END SORT
-             
+    
+    
+CLRSCR PROC
+;clean the window
+        MOV     AH,6     ; SCROLL UP FUNCTION
+        XOR     AL,AL    ; CLEAR SCREEN
+        XOR     CX,CX    ;UPPER LEFT CORNER >> CH(ROW) , CL(COL)
+        MOV     DX,184FH ;LOWER RIGHT CORNER>> DH(ROW) , DL(COL)
+        MOV     BH,1EH  ; BLUE BACK , YELLOW FONT 
+        INT     10H
+        RET
+CLRSCR ENDP             
 
 END MAIN
 
