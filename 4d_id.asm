@@ -11,13 +11,15 @@ ENDM
 
 
 .DATA
-MSG0 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER Grades: $'
-MSG1 DB 0Dh,0Ah, 0Dh,0Ah, 'ENTER IDs: $'
-MSG2 DB 0Dh,0Ah, 0Dh,0Ah, 'SORTED ARRAY: $'  
-MSG3 DB 0Dh,0Ah, 0Dh,0Ah, 'ID           : $'
+MSG0 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Enter Grades: $'
+MSG1 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Enter IDs:   $'
+MSG2 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Sorted Grades: $'  
+MSG3 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* IDs           : $'
+MSG4 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*$'
+
+MSG6 DB 0Dh,0Ah, 0Dh,0Ah, ' *..*..*..*..*..*..*..* END OF PROGRAM *..*..*..*..*..*..*..*$'
 SPACE DB ' $'
 GRADES DB ?
-IDS DW ?
 
 
 
@@ -27,44 +29,50 @@ IDS DW ?
 ;************** here my main function ***********************
 MAIN PROC
   
-  
- ;READ GRADES 
- PRINT MSG0      
- MOV SI,00
- MOV CX,05 ; 5 GD2
- CALL READ_GRD   
+ MOV BL ,5
+ 
+ PRINT MSG4
+ 
  
  ;READ IDS
  PRINT MSG1      
  MOV SI,05
- MOV CX,10 ; 5 GD2
+ MOV CX,10
  CALL READ_ID   
   
+ ;READ GRADES 
+ PRINT MSG0      
+ MOV SI,00
+ MOV CX,05
+ CALL READ_GRD   
+ 
+ PRINT MSG4
+ 
  ;SORT GRADES (BUBBLE)                          
- MOV   CX , 4 ;N = 25    
- MOV   SI , 00 ; AS COUNTER
+ MOV   CX , 4     
+ MOV   SI , 00 
  CALL  SORT
  
- ;PRINT SORTED GRADES
- PRINT MSG2            
- MOV   SI , 00 ; AS COUNTER
- MOV   CX , 05 ;N = 25            
- CALL WRITE
  
  ;PRINT SORTED GRADES
  PRINT MSG3            
- MOV   SI , 05 ; AS COUNTER
- MOV   CX , 10 ;N = 25              
+ MOV   SI , 05 
+ MOV   CX , 10               
  CALL WRITE_ID
  
+ ;PRINT SORTED GRADES
+ PRINT MSG2            
+ MOV   SI , 00 
+ MOV   CX , 05             
+ CALL WRITE_GRD
  
-    
+ PRINT MSG6   
 ;RET   
 MAIN ENDP
 
 
 ;*****************************************
-WRITE PROC
+WRITE_GRD PROC
 
     PUSH AX
     PUSH BX
@@ -102,7 +110,7 @@ POP BX
 POP AX 
     
 RET
-WRITE ENDP
+WRITE_GRD ENDP
 
 
 ;*****************************************
@@ -128,6 +136,7 @@ PRNT:
     ADD DL,30H
     INT 21H
     
+    ;SHIFT BY NUMBER OF N (SIZE OF ARRAY)
     MOV AL,GRADES[SI+5]
     AAM
     MOV BX,AX
@@ -251,6 +260,7 @@ READ_ID PROC
         MOV     AX,BX
         SUB     AX,3030H
         AAD
+        ;SHIFT BY N (SIZE OF ARRAY)
         MOV     GRADES[SI+5],AL
          
 ;INCREMENT THE INDEX     
@@ -302,14 +312,17 @@ PUSH BX
 PUSH DX    
 
 
-MOV AL, GRADES[SI + 5]
+; SHIFT BY N
+MOV AL, GRADES[SI + 5] 
+;SHIFT BY N + 1
 MOV BL , GRADES[SI + 6] 
 
 MOV GRADES[SI + 5],BL
 MOV GRADES[SI+ 6],AL
 
-
+; SHIFT BY 2*N
 MOV AL, GRADES[SI + 10]
+; SHIFT BY 2*N + 1
 MOV BL , GRADES[SI + 11] 
 
 MOV GRADES[SI + 10],BL
