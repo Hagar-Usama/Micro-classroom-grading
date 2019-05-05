@@ -466,7 +466,6 @@ SORT ENDP
     
     
 CLRSCR PROC
-;clean the window
         MOV     AH,6     ; SCROLL UP FUNCTION
         XOR     AL,AL    ; CLEAR SCREEN
         XOR     CX,CX    ;UPPER LEFT CORNER >> CH(ROW) , CL(COL)
