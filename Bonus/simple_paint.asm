@@ -24,29 +24,24 @@ call show_cursor
 
 ; if left_click , then draw 
 cmp bx , 1
-jne Next
+jne Step_2
 
 call putpix ;call procedure
 
- call change_color
-;if right_click, change_color
-;cmp bx , 2
-;jne Next
+Step_2:
+; if right_click, then change color
+cmp bx , 2
+jne Step_3
+call change_color
 
-;call change_color
+Step_3:
+cmp bx,3
+jne Next
+call dec_color
 jmp Next
 
   
  
- 
-jmp Next
-
-change :
-    mov al , color
-    add al ,1
-    mov color , al
-    jmp Next
-
 
 mov ah,4ch
 int 21h
@@ -73,6 +68,16 @@ ret
 change_color endp
 
 ;******************************************
+dec_color proc 
+    mov al , color
+    dec al
+    mov color , al
+    
+ret
+dec_color endp
+
+;******************************************
+
 show_cursor proc
 mov ax, 1 
 int 33h   
