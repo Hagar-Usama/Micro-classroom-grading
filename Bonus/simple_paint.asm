@@ -14,6 +14,7 @@ int 10h
 mov al, 2 
 mov color ,al
 
+call sqr_color
 ;start of program :
 Next:
 mov ax, 3   ;get cursor positon in cx,dx
@@ -28,11 +29,13 @@ jne Step_2
 
 call putpix ;call procedure
 
+
 Step_2:
 ; if right_click, then change color
 cmp bx , 2
 jne Step_3
 call change_color
+call sqr_color
 
 Step_3:
 cmp bx,3
@@ -57,7 +60,23 @@ shr cx,1    ; cx will get double so we divide it by two
 int 10h     ; set pixel.
 ret
 putpix endp 
+;**************************************************
+sqr_color proc
 
+mov ah , 0ch
+mov al, color
+;mov AX, 0C07h
+xor BX, BX
+mov CX, 007h ; 50 in hex
+mov DX, 007h ; 100 in hex
+lineloop:
+int 10h
+dec CX
+JNS lineloop ; If CX isn't negative,
+; draw another pixel.
+    
+ret
+sqr_color endp
 ;*****************************************
 change_color proc 
     mov al , color
