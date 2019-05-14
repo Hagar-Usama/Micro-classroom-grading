@@ -61,6 +61,9 @@ jmp Next
 
 Step_3:
 cmp bx,4
+jne Next 
+
+cmp bx,3
 jne Next
 ;call dec_color
 ;call color_indicate
