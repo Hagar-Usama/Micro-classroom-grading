@@ -23,6 +23,7 @@ main proc far
                      
  
 ; preparing for graphics mode 
+bgn:
 mov al, 13h
 mov ah, 0   ; set graphics video mode.
 int 10h   
@@ -56,15 +57,15 @@ jne Step_3
 call inc_color
 call color_indicate
 
-Step_3:
-cmp bx,3
-jne Next
-call dec_color
-call color_indicate
-
-
 jmp Next
 
+Step_3:
+cmp bx,4
+jne Next
+;call dec_color
+;call color_indicate
+
+jmp bgn
  
 main endp
  
@@ -167,5 +168,6 @@ code ends
     mov ax, 4c00h ; exit to operating system.
     int 21h    
 ends
+
 
 end start ; set entry point and stop the assembler.
