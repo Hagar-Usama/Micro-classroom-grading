@@ -1,0 +1,535 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+4970.com -- emu8086 assembler version: 4.08  
+ 
+[ 5/14/2019  --  3:58:49 AM ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       ;**********************************************************************************
+[   2]        :                                       ;**********************************************************************************
+[   3]        :                                       ;*********     PROJECT #0      ****************************************************
+[   4]        :                                       ;*********     HAGAR USAMA     ****************************************************
+[   5]        :                                       ;*********       4970          ****************************************************
+[   6]        :                                       ;*********   MAY , 5 , 01:48   ****************************************************
+[   7]        :                                       ;**********************************************************************************
+[   8]        :                                       ;**********************************************************************************
+[   9]        :                                       
+[  10]        :                                       ORG 100H
+[  11]        :                                       
+[  12]        :                                       PRINT MACRO MSG
+[  13]        :                                       LEA  DX,MSG
+[  14]        :                                       MOV  AH,9
+[  15]        :                                       INT  21H
+[  16]        :                                       ENDM
+[  17]        :                                       
+[  18]        :                                       
+[  19]    0100: E9 3F 01                              .DATA
+[  20]    0103: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 20 45   MSG0 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Enter Grades: $'
+                6E 74 65 72 20 47 72 61 64 65 73 3A 
+                20 24                               
+[  21]    011D: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 20 45   MSG1 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Enter IDs:   $'
+                6E 74 65 72 20 49 44 73 3A 20 20 20 
+                24                                  
+[  22]    0136: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 20 53   MSG2 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* Sorted Grades: $'
+                6F 72 74 65 64 20 47 72 61 64 65 73 
+                3A 20 24                            
+[  23]    0151: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 20 49   MSG3 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.* IDs           : $'
+                44 73 20 20 20 20 20 20 20 20 20 20 
+                3A 20 24                            
+[  24]    016C: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 2E 2A   MSG4 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*$'
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 24                      
+[  25]    01AD: 0D 0A 0D 0A 20 2A 2E 2E 2A 2E 2E 2A   MSG5 DB 0Dh,0Ah, 0Dh,0Ah, ' *..*..*..*..*..*..*..* END OF PROGRAM *..*..*..*..*..*..*..*$'
+                2E 2E 2A 2E 2E 2A 2E 2E 2A 2E 2E 2A 
+                2E 2E 2A 20 45 4E 44 20 4F 46 20 50 
+                52 4F 47 52 41 4D 20 2A 2E 2E 2A 2E 
+                2E 2A 2E 2E 2A 2E 2E 2A 2E 2E 2A 2E 
+                2E 2A 2E 2E 2A 24                   
+[  26]    01EF: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 2E 2A   MSG6 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*  $'
+                20 20 24                            
+[  27]    01FE: 0D 0A 0D 0A 20 2A 2E 2A 2E 2A 2E 2A   MSG7 DB 0Dh,0Ah, 0Dh,0Ah, ' *.*.*.*. Grade * ID.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*$'
+                2E 20 47 72 61 64 65 20 2A 20 49 44 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 2E 2A 
+                2E 2A 2E 2A 24                      
+[  28]    023F: 20 24                                 SPACE DB ' $'
+[  29]    0241: 00                                    GRADES DB ?
+[  30]        :                                       
+[  31]        :                                       
+[  32]        :                                       
+[  33]    0242:                                       .CODE
+[  34]        :                                       
+[  35]        :                                       
+[  36]        :                                       ;************** MAIN FUNCTION ***********************
+[  37]    0242:                                       MAIN PROC
+[  38]        :                                       
+[  39]    0242: E8 FF 01                              CALL CLRSCR
+[  40]        :                                       
+[  41]    0245: BA 6C 01 B4 09 CD 21                  PRINT MSG4
+[  42]        :                                       ;READ IDS
+[  43]    024C: BA 1D 01 B4 09 CD 21                  PRINT MSG1
+[  44]        :                                       ;N
+[  45]    0253: BE 05 00                              MOV SI,05
+[  46]        :                                       ;N*2
+[  47]    0256: B9 0A 00                              MOV CX,10
+[  48]    0259: E8 3A 01                              CALL READ_ID
+[  49]        :                                       
+[  50]        :                                       
+[  51]        :                                       ;READ GRADES
+[  52]    025C: BA 03 01 B4 09 CD 21                  PRINT MSG0
+[  53]    0263: BE 00 00                              MOV SI,00
+[  54]        :                                       ;N
+[  55]    0266: B9 05 00                              MOV CX,05
+[  56]    0269: E8 FD 00                              CALL READ_GRD
+[  57]        :                                       
+[  58]    026C: BA 6C 01 B4 09 CD 21                  PRINT MSG4
+[  59]        :                                       
+[  60]        :                                       ;SORT GRADES (BUBBLE)
+[  61]    0273: BE 00 00                              MOV   SI , 00
+[  62]        :                                       ;N-1
+[  63]    0276: B9 04 00                              MOV   CX , 4
+[  64]    0279: E8 96 01                              CALL  SORT
+[  65]        :                                       
+[  66]        :                                       ;PRINT VERTICAL STYLE
+[  67]    027C: BA FE 01 B4 09 CD 21                  PRINT MSG7
+[  68]    0283: BE 00 00                              MOV   SI , 00
+[  69]        :                                       ;N
+[  70]    0286: B9 05 00                              MOV   CX , 05
+[  71]    0289: E8 7C 00                              CALL WRITE_ALL
+[  72]        :                                       
+[  73]        :                                       ;PRINT HORIZONTAL STYLE
+[  74]        :                                       ;PRINT IDS
+[  75]        :                                       ;PRINT MSG3
+[  76]        :                                       ;MOV   SI , 05
+[  77]        :                                       ;MOV   CX , 10
+[  78]        :                                       ;CALL WRITE_ID
+[  79]        :                                       
+[  80]        :                                       ;PRINT SORTED GRADES
+[  81]        :                                       ;PRINT MSG2
+[  82]        :                                       ;MOV   SI , 00
+[  83]        :                                       ;MOV   CX , 05
+[  84]        :                                       ;CALL WRITE_GRD
+[  85]        :                                       
+[  86]    028C: BA 6C 01 B4 09 CD 21                  PRINT MSG4
+[  87]    0293: BA AD 01 B4 09 CD 21                  PRINT MSG5
+[  88]        :                                       ;RET
+[  89]        :                                       MAIN ENDP
+[  90]        :                                       
+[  91]        :                                       
+[  92]        :                                       ;*****************************************
+[  93]    029A:                                       WRITE_GRD PROC
+[  94]        :                                       
+[  95]    029A: 50                                    PUSH AX
+[  96]    029B: 53                                    PUSH BX
+[  97]    029C: 52                                    PUSH DX
+[  98]        :                                       
+[  99]        :                                       
+[ 100]        :                                       
+[ 101]        :                                       ;PRINT GRADES IN ORDER
+[ 102]    029D:                                       PRINT:
+[ 103]    029D: 3B CE                                 CMP CX,SI
+[ 104]    029F: 74 1F                                 JZ  EXIT
+[ 105]    02A1: 8A 84 41 02                           MOV AL,GRADES[SI]
+[ 106]    02A5: D4 0A                                 AAM
+[ 107]    02A7: 8B D8                                 MOV BX,AX
+[ 108]    02A9: 8A D7                                 MOV DL,BH
+[ 109]    02AB: 80 C2 30                              ADD DL,30H
+[ 110]    02AE: B4 02                                 MOV AH,2
+[ 111]    02B0: CD 21                                 INT 21H
+[ 112]        :                                       
+[ 113]    02B2: 8A D3                                 MOV DL,BL
+[ 114]    02B4: 80 C2 30                              ADD DL,30H
+[ 115]    02B7: CD 21                                 INT 21H
+[ 116]        :                                       
+[ 117]    02B9: B2 09                                 MOV DL, 09H ; SPACE: 20H , TAB:09H
+[ 118]    02BB: CD 21                                 INT 21H
+[ 119]        :                                       
+[ 120]        :                                       
+[ 121]    02BD: 46                                    INC SI
+[ 122]    02BE: EB DD                                 JMP PRINT
+[ 123]        :                                       
+[ 124]    02C0:                                       EXIT:
+[ 125]        :                                       
+[ 126]    02C0: 5A                                    POP DX
+[ 127]    02C1: 5B                                    POP BX
+[ 128]    02C2: 58                                    POP AX
+[ 129]        :                                       
+[ 130]    02C3: C3                                    RET
+[ 131]        :                                       WRITE_GRD ENDP
+[ 132]        :                                       
+[ 133]        :                                       
+[ 134]        :                                       ;*****************************************
+[ 135]    02C4:                                       WRITE_ID PROC
+[ 136]        :                                       
+[ 137]    02C4: 50                                    PUSH AX
+[ 138]    02C5: 53                                    PUSH BX
+[ 139]    02C6: 52                                    PUSH DX
+[ 140]        :                                       
+[ 141]        :                                       ;PRINT GRADES IN ORDER
+[ 142]    02C7:                                       PRNT:
+[ 143]    02C7: 3B CE                                 CMP CX,SI
+[ 144]    02C9: 74 39                                 JZ  EXT
+[ 145]    02CB: 8A 84 41 02                           MOV AL,GRADES[SI]
+[ 146]    02CF: D4 0A                                 AAM
+[ 147]    02D1: 8B D8                                 MOV BX,AX
+[ 148]    02D3: 8A D7                                 MOV DL,BH
+[ 149]    02D5: 80 C2 30                              ADD DL,30H
+[ 150]    02D8: B4 02                                 MOV AH,2
+[ 151]    02DA: CD 21                                 INT 21H
+[ 152]        :                                       
+[ 153]    02DC: 8A D3                                 MOV DL,BL
+[ 154]    02DE: 80 C2 30                              ADD DL,30H
+[ 155]    02E1: CD 21                                 INT 21H
+[ 156]        :                                       
+[ 157]        :                                       ;SHIFT BY NUMBER OF N (SIZE OF ARRAY)
+[ 158]    02E3: 8A 84 46 02                           MOV AL,GRADES[SI+5]
+[ 159]    02E7: D4 0A                                 AAM
+[ 160]    02E9: 8B D8                                 MOV BX,AX
+[ 161]    02EB: 8A D7                                 MOV DL,BH
+[ 162]    02ED: 80 C2 30                              ADD DL,30H
+[ 163]    02F0: B4 02                                 MOV AH,2
+[ 164]    02F2: CD 21                                 INT 21H
+[ 165]        :                                       
+[ 166]    02F4: 8A D3                                 MOV DL,BL
+[ 167]    02F6: 80 C2 30                              ADD DL,30H
+[ 168]    02F9: CD 21                                 INT 21H
+[ 169]        :                                       
+[ 170]    02FB: B2 09                                 MOV DL, 09H ; SPACE: 20H , TAB:09H
+[ 171]    02FD: CD 21                                 INT 21H
+[ 172]        :                                       
+[ 173]        :                                       
+[ 174]    02FF: 83 C6 01                              ADD SI,1
+[ 175]    0302: EB C3                                 JMP PRNT
+[ 176]        :                                       
+[ 177]    0304:                                       EXT:
+[ 178]        :                                       
+[ 179]    0304: 5A                                    POP DX
+[ 180]    0305: 5B                                    POP BX
+[ 181]    0306: 58                                    POP AX
+[ 182]        :                                       
+[ 183]    0307: C3                                    RET
+[ 184]        :                                       WRITE_ID ENDP
+[ 185]        :                                       
+[ 186]        :                                       ;***************************************
+[ 187]    0308:                                       WRITE_ALL PROC
+[ 188]        :                                       
+[ 189]    0308: 50                                    PUSH AX
+[ 190]    0309: 53                                    PUSH BX
+[ 191]    030A: 52                                    PUSH DX
+[ 192]        :                                       
+[ 193]        :                                       
+[ 194]        :                                       
+[ 195]        :                                       ;PRINT GRADES IN ORDER
+[ 196]    030B:                                       PRNT_ALL:
+[ 197]    030B: 3B CE                                 CMP CX,SI
+[ 198]    030D: 74 56                                 JZ  EXIT_ALL
+[ 199]        :                                       
+[ 200]    030F: BA EF 01 B4 09 CD 21                  PRINT MSG6
+[ 201]        :                                       
+[ 202]    0316: 8A 84 41 02                           MOV AL,GRADES[SI]
+[ 203]    031A: D4 0A                                 AAM
+[ 204]    031C: 8B D8                                 MOV BX,AX
+[ 205]    031E: 8A D7                                 MOV DL,BH
+[ 206]    0320: 80 C2 30                              ADD DL,30H
+[ 207]    0323: B4 02                                 MOV AH,2
+[ 208]    0325: CD 21                                 INT 21H
+[ 209]        :                                       
+[ 210]    0327: 8A D3                                 MOV DL,BL
+[ 211]    0329: 80 C2 30                              ADD DL,30H
+[ 212]    032C: CD 21                                 INT 21H
+[ 213]        :                                       
+[ 214]    032E: B2 09                                 MOV DL, 09H ; SPACE: 20H , TAB:09H
+[ 215]    0330: CD 21                                 INT 21H
+[ 216]        :                                       
+[ 217]        :                                       ;SHIFT BY N
+[ 218]    0332: 8A 84 46 02                           MOV AL,GRADES[SI + 5]
+[ 219]    0336: D4 0A                                 AAM
+[ 220]    0338: 8B D8                                 MOV BX,AX
+[ 221]    033A: 8A D7                                 MOV DL,BH
+[ 222]    033C: 80 C2 30                              ADD DL,30H
+[ 223]    033F: B4 02                                 MOV AH,2
+[ 224]    0341: CD 21                                 INT 21H
+[ 225]        :                                       
+[ 226]    0343: 8A D3                                 MOV DL,BL
+[ 227]    0345: 80 C2 30                              ADD DL,30H
+[ 228]    0348: CD 21                                 INT 21H
+[ 229]        :                                       
+[ 230]    034A: 8A 84 4B 02                           MOV AL,GRADES[SI+10]
+[ 231]    034E: D4 0A                                 AAM
+[ 232]    0350: 8B D8                                 MOV BX,AX
+[ 233]    0352: 8A D7                                 MOV DL,BH
+[ 234]    0354: 80 C2 30                              ADD DL,30H
+[ 235]    0357: B4 02                                 MOV AH,2
+[ 236]    0359: CD 21                                 INT 21H
+[ 237]        :                                       
+[ 238]    035B: 8A D3                                 MOV DL,BL
+[ 239]    035D: 80 C2 30                              ADD DL,30H
+[ 240]    0360: CD 21                                 INT 21H
+[ 241]        :                                       
+[ 242]        :                                       
+[ 243]        :                                       
+[ 244]    0362: 46                                    INC SI
+[ 245]    0363: EB A6                                 JMP PRNT_ALL
+[ 246]        :                                       
+[ 247]    0365:                                       EXIT_ALL:
+[ 248]        :                                       
+[ 249]    0365: 5A                                    POP DX
+[ 250]    0366: 5B                                    POP BX
+[ 251]    0367: 58                                    POP AX
+[ 252]        :                                       
+[ 253]    0368: C3                                    RET
+[ 254]        :                                       WRITE_ALL ENDP
+[ 255]        :                                       ;********************************************************************
+[ 256]    0369:                                       READ_GRD PROC
+[ 257]        :                                       
+[ 258]    0369: 50                                    PUSH AX
+[ 259]    036A: 53                                    PUSH BX
+[ 260]    036B: 52                                    PUSH DX
+[ 261]        :                                       
+[ 262]    036C:                                       RD_INPUT:
+[ 263]        :                                       ;GET THE LEAST SIGNIFICANT GD1IT:
+[ 264]        :                                       ; into AL:
+[ 265]    036C: B4 01                                 MOV     AH, 01H
+[ 266]    036E: CD 21                                 INT     21H
+[ 267]    0370: 8A F8                                 MOV     BH,AL
+[ 268]        :                                       
+[ 269]        :                                       
+[ 270]        :                                       ;GET THE MOST SIGNIFICANT GD1IT :
+[ 271]        :                                       ;STORE IT 100 BYTES FAR
+[ 272]        :                                       
+[ 273]    0372: B4 01                                 MOV     AH, 01H
+[ 274]    0374: CD 21                                 INT     21h
+[ 275]    0376: 8A D8                                 MOV     BL,AL
+[ 276]        :                                       
+[ 277]        :                                       
+[ 278]    0378: 8B C3                                 MOV     AX,BX
+[ 279]    037A: 2D 30 30                              SUB     AX,3030H
+[ 280]    037D: D5 0A                                 AAD
+[ 281]    037F: 88 84 41 02                           MOV     GRADES[SI],AL
+[ 282]        :                                       
+[ 283]        :                                       ;INCREMENT THE INDEX
+[ 284]    0383: 46                                    INC     SI
+[ 285]        :                                       
+[ 286]    0384: B4 02                                 MOV     AH,02H
+[ 287]    0386: B2 20                                 MOV     DL, 20H ; SPACE: 20H , TAB:09H
+[ 288]    0388: CD 21                                 INT     21H
+[ 289]        :                                       
+[ 290]        :                                       
+[ 291]        :                                       
+[ 292]    038A: 3B F1                                 CMP     SI,CX
+[ 293]    038C: 75 DE                                 JNE     RD_INPUT
+[ 294]        :                                       
+[ 295]        :                                       
+[ 296]        :                                       
+[ 297]    038E: B2 0A                                 MOV     DL, 0AH ; SPACE: 20H , TAB:09H
+[ 298]    0390: CD 21                                 INT     21H
+[ 299]        :                                       
+[ 300]        :                                       
+[ 301]    0392: 5A                                    POP DX
+[ 302]    0393: 5B                                    POP BX
+[ 303]    0394: 58                                    POP AX
+[ 304]        :                                       
+[ 305]    0395: C3                                    RET
+[ 306]        :                                       READ_GRD ENDP
+[ 307]        :                                       
+[ 308]        :                                       ;***************************************************
+[ 309]        :                                       
+[ 310]    0396:                                       READ_ID PROC
+[ 311]        :                                       
+[ 312]    0396: 50                                    PUSH AX
+[ 313]    0397: 53                                    PUSH BX
+[ 314]    0398: 52                                    PUSH DX
+[ 315]        :                                       
+[ 316]    0399:                                       RD_ID:
+[ 317]        :                                       ;GET THE LEAST SIGNIFICANT GD1IT:
+[ 318]        :                                       ; into AL:
+[ 319]    0399: B4 01                                 MOV     AH, 01H
+[ 320]    039B: CD 21                                 INT     21H
+[ 321]    039D: 8A F8                                 MOV     BH,AL
+[ 322]        :                                       
+[ 323]        :                                       ;GET THE MOST SIGNIFICANT GD1IT :
+[ 324]        :                                       
+[ 325]    039F: B4 01                                 MOV     AH, 01H
+[ 326]    03A1: CD 21                                 INT     21h
+[ 327]    03A3: 8A D8                                 MOV     BL,AL
+[ 328]        :                                       
+[ 329]    03A5: 8B C3                                 MOV     AX,BX
+[ 330]    03A7: 2D 30 30                              SUB     AX,3030H
+[ 331]    03AA: D5 0A                                 AAD
+[ 332]    03AC: 88 84 41 02                           MOV     GRADES[SI],AL
+[ 333]        :                                       
+[ 334]        :                                       ;GET THE LEAST SIGNIFICANT GD1IT:
+[ 335]        :                                       ; into AL:
+[ 336]    03B0: B4 01                                 MOV     AH, 01H
+[ 337]    03B2: CD 21                                 INT     21H
+[ 338]    03B4: 8A F8                                 MOV     BH,AL
+[ 339]        :                                       
+[ 340]        :                                       ;GET THE MOST SIGNIFICANT GD1IT :
+[ 341]        :                                       
+[ 342]    03B6: B4 01                                 MOV     AH, 01H
+[ 343]    03B8: CD 21                                 INT     21h
+[ 344]    03BA: 8A D8                                 MOV     BL,AL
+[ 345]        :                                       
+[ 346]    03BC: 8B C3                                 MOV     AX,BX
+[ 347]    03BE: 2D 30 30                              SUB     AX,3030H
+[ 348]    03C1: D5 0A                                 AAD
+[ 349]        :                                       ;SHIFT BY N (SIZE OF ARRAY)
+[ 350]    03C3: 88 84 46 02                           MOV     GRADES[SI+5],AL
+[ 351]        :                                       
+[ 352]        :                                       ;INCREMENT THE INDEX
+[ 353]    03C7: 83 C6 01                              ADD     SI,1
+[ 354]        :                                       
+[ 355]    03CA: B4 02                                 MOV     AH,02H
+[ 356]    03CC: B2 20                                 MOV     DL, 20H ; SPACE: 20H , TAB:09H
+[ 357]    03CE: CD 21                                 INT     21H
+[ 358]        :                                       
+[ 359]        :                                       
+[ 360]        :                                       
+[ 361]    03D0: 3B F1                                 CMP     SI,CX
+[ 362]    03D2: 75 C5                                 JNE     RD_ID
+[ 363]        :                                       
+[ 364]        :                                       
+[ 365]        :                                       
+[ 366]    03D4: B2 0A                                 MOV     DL, 0AH ; SPACE: 20H , TAB:09H
+[ 367]    03D6: CD 21                                 INT     21H
+[ 368]        :                                       
+[ 369]        :                                       
+[ 370]    03D8: 5A                                    POP DX
+[ 371]    03D9: 5B                                    POP BX
+[ 372]    03DA: 58                                    POP AX
+[ 373]        :                                       
+[ 374]    03DB: C3                                    RET
+[ 375]        :                                       READ_ID ENDP
+[ 376]        :                                       
+[ 377]        :                                       
+[ 378]        :                                       ;***************************************************
+[ 379]        :                                       
+[ 380]    03DC:                                       SWAP_GRD PROC
+[ 381]    03DC: 50                                    PUSH AX
+[ 382]    03DD: 53                                    PUSH BX
+[ 383]    03DE: 52                                    PUSH DX
+[ 384]    03DF: 88 9C 41 02                           MOV GRADES[SI],BL
+[ 385]    03E3: 88 84 42 02                           MOV GRADES[SI+1],AL
+[ 386]        :                                       
+[ 387]        :                                       
+[ 388]    03E7: 5A                                    POP DX
+[ 389]    03E8: 5B                                    POP BX
+[ 390]    03E9: 58                                    POP AX
+[ 391]    03EA: C3                                    RET
+[ 392]        :                                       SWAP_GRD ENDP
+[ 393]        :                                       
+[ 394]        :                                       ;***************************************
+[ 395]    03EB:                                       SWAP_ID PROC
+[ 396]    03EB: 50                                    PUSH AX
+[ 397]    03EC: 53                                    PUSH BX
+[ 398]    03ED: 52                                    PUSH DX
+[ 399]        :                                       
+[ 400]        :                                       
+[ 401]        :                                       ; SHIFT BY N
+[ 402]    03EE: 8A 84 46 02                           MOV AL, GRADES[SI + 5]
+[ 403]        :                                       ;SHIFT BY N + 1
+[ 404]    03F2: 8A 9C 47 02                           MOV BL , GRADES[SI + 6]
+[ 405]        :                                       
+[ 406]    03F6: 88 9C 46 02                           MOV GRADES[SI + 5],BL
+[ 407]    03FA: 88 84 47 02                           MOV GRADES[SI+ 6],AL
+[ 408]        :                                       
+[ 409]        :                                       ; SHIFT BY 2*N
+[ 410]    03FE: 8A 84 4B 02                           MOV AL, GRADES[SI + 10]
+[ 411]        :                                       ; SHIFT BY 2*N + 1
+[ 412]    0402: 8A 9C 4C 02                           MOV BL , GRADES[SI + 11]
+[ 413]        :                                       
+[ 414]    0406: 88 9C 4B 02                           MOV GRADES[SI + 10],BL
+[ 415]    040A: 88 84 4C 02                           MOV GRADES[SI+ 11],AL
+[ 416]        :                                       
+[ 417]        :                                       
+[ 418]    040E: 5A                                    POP DX
+[ 419]    040F: 5B                                    POP BX
+[ 420]    0410: 58                                    POP AX
+[ 421]    0411: C3                                    RET
+[ 422]        :                                       SWAP_ID ENDP
+[ 423]        :                                       
+[ 424]        :                                       ;***************************************
+[ 425]        :                                       
+[ 426]        :                                       
+[ 427]    0412:                                       SORT PROC
+[ 428]    0412: 50                                    PUSH AX
+[ 429]    0413: 53                                    PUSH BX
+[ 430]    0414: 52                                    PUSH DX
+[ 431]        :                                       
+[ 432]        :                                       ;MOV CX,4 ; N-1 : 25-1 = 24
+[ 433]        :                                       ;MOV SI,00
+[ 434]        :                                       
+[ 435]    0415:                                       BUBBLE:
+[ 436]    0415: 3B CE                                 CMP CX,SI
+[ 437]    0417: 74 1C                                 JZ  NEXT
+[ 438]    0419: 8A 84 41 02                           MOV AL, GRADES[SI]
+[ 439]    041D: 8A 9C 42 02                           MOV BL , GRADES[SI + 1]
+[ 440]    0421: 3A C3                                 CMP AL , BL
+[ 441]    0423: 72 05                                 JB  SWAP
+[ 442]    0425: 83 C6 01                              ADD SI , 1
+[ 443]    0428: EB EB                                 JMP BUBBLE
+[ 444]        :                                       
+[ 445]    042A:                                       SWAP:
+[ 446]        :                                       ;SWAPPING GRADES
+[ 447]    042A: E8 AF FF                              CALL SWAP_GRD
+[ 448]    042D: E8 BB FF                              CALL SWAP_ID
+[ 449]    0430: 83 C6 01                              ADD SI,1
+[ 450]    0433: EB E0                                 JMP BUBBLE
+[ 451]        :                                       
+[ 452]    0435:                                       NEXT:
+[ 453]    0435: BE 00 00                              MOV SI,00
+[ 454]    0438: 83 E9 01                              SUB CX,1
+[ 455]    043B: 83 F9 00                              CMP CX,0
+[ 456]    043E: 75 D5                                 JNZ BUBBLE
+[ 457]        :                                       
+[ 458]        :                                       
+[ 459]    0440: 5A                                    POP DX
+[ 460]    0441: 5B                                    POP BX
+[ 461]    0442: 58                                    POP AX
+[ 462]        :                                       
+[ 463]    0443: C3                                    RET
+[ 464]        :                                       SORT ENDP
+[ 465]        :                                       ;END SORT
+[ 466]        :                                       
+[ 467]        :                                       
+[ 468]    0444:                                       CLRSCR PROC
+[ 469]    0444: B4 06                                 MOV     AH,6     ; SCROLL UP FUNCTION
+[ 470]    0446: 32 C0                                 XOR     AL,AL    ; CLEAR SCREEN
+[ 471]    0448: 33 C9                                 XOR     CX,CX    ;UPPER LEFT CORNER >> CH(ROW) , CL(COL)
+[ 472]    044A: BA 4F 18                              MOV     DX,184FH ;LOWER RIGHT CORNER>> DH(ROW) , DL(COL)
+[ 473]    044D: B7 1E                                 MOV     BH,1EH  ; BLUE BACK , YELLOW FONT
+[ 474]    044F: CD 10                                 INT     10H
+[ 475]    0451: C3                                    RET
+[ 476]        :                                       CLRSCR ENDP
+[ 477]        :                                       
+[ 478]        :                                       END MAIN
+[ 479]        :                                       
+[ 480]        :                                       
+[ 481]        :                                       
+[ 482]        :                                       
+[ 483]        :                                       
+[ 484]        :                                       
+[ 485]        :                                       
+[ 486]        :                                       
+[ 487]        :                                       
+[ 488]        :                                       
+[ 489]        :                                       
+[ 490]        :                                       
+[ 491]        :                                       
+[ 492]        :                                       
+[ 493]        :                                       
+ 
+===================================================================================================
+ 
+
+
+
+
+===================================================================================================

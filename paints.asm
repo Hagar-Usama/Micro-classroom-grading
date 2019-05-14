@@ -75,7 +75,14 @@ putpix proc
 mov al, color  ;color of pixel  
 mov ah, 0ch    
 shr cx,1    ; cx will get double so we divide it by two
-int 10h     ; set pixel.
+int 10h     ; set pixel. 
+inc cx
+int 10h
+inc dx
+int 10h 
+dec cx
+int 10h
+
 ret
 putpix endp 
 ;**************************************************
@@ -97,20 +104,6 @@ jns lineloop
     
 ret
 color_indicate endp
-;*****************************************
-tele proc
-; ah = 0ah >> print character
-
-mov al , 'a'
-mov ah, 0eh
-int 10h
-
-
-
-; draw another pixel.
-    
-ret
-tele endp
 
 ;*****************************************
 inc_color proc 
@@ -157,16 +150,6 @@ int 33h
 ret
 get_pos_stat endp
 ;******************** 
-CLRSCR PROC
-        MOV     AH,6     ; SCROLL UP FUNCTION
-        XOR     AL,AL    ; CLEAR SCREEN
-        XOR     CX,CX    ;UPPER LEFT CORNER >> CH(ROW) , CL(COL)
-        MOV     DX,184FH ;LOWER RIGHT CORNER>> DH(ROW) , DL(COL)
-        MOV     BH,1EH  ; BLUE BACK , YELLOW FONT 
-        INT     10H
-        RET
-CLRSCR ENDP             
-;********************
 
 code ends 
     

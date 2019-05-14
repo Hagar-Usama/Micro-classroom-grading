@@ -1,0 +1,250 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+paints.exe -- emu8086 assembler version: 4.08  
+ 
+[ 5/14/2019  --  3:52:24 AM ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       ; multi-segment executable file template.
+[   2]        :                                       
+[   3]        :                                       data segment
+[   4]        :                                       ; add your data here!
+[   5]    0000: 70 72 65 73 73 20 61 6E 79 20 6B 65   pkey db "press any key...$"
+                79 2E 2E 2E 24                      
+[   6]    0011: 02                                    color db 2
+[   7]        :                                       ends
+[   8]        :                                       
+[   9]        :                                       stack segment
+[  10]    0020: 00 00 00 00 00 00 00 00 00 00 00 00   dw   128  dup(0)
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00 00 00 00 00 00 00 00 00 
+                00 00 00 00                         
+[  11]        :                                       ends
+[  12]        :                                       
+[  13]        :                                       code segment
+[  14]    0120:                                       start:
+[  15]        :                                       ; set segment registers:
+[  16]    0120: B8 00 00                              mov ax, data
+[  17]    0123: 8E D8                                 mov ds, ax
+[  18]    0125: 8E C0                                 mov es, ax
+[  19]        :                                       ;**************************************************
+[  20]        :                                       ;##################################################
+[  21]        :                                       
+[  22]    0127:                                       main proc far
+[  23]        :                                       
+[  24]        :                                       
+[  25]        :                                       ; preparing for graphics mode
+[  26]    0127: B0 13                                 mov al, 13h
+[  27]    0129: B4 00                                 mov ah, 0   ; set graphics video mode.
+[  28]    012B: CD 10                                 int 10h
+[  29]        :                                       
+[  30]        :                                       ;making initial color is green
+[  31]    012D: B0 02                                 mov al, 2
+[  32]    012F: A2 11 00                              mov color ,al
+[  33]        :                                       
+[  34]    0132: E8 3B 00                              call color_indicate
+[  35]        :                                       
+[  36]        :                                       
+[  37]        :                                       ;start of program :
+[  38]    0135:                                       Next:
+[  39]    0135: B8 03 00                              mov ax, 3   ;get cursor positon in cx,dx
+[  40]    0138: CD 33                                 int 33h
+[  41]        :                                       
+[  42]        :                                       ;useless for some reason
+[  43]    013A: E8 5B 00                              call show_cursor
+[  44]        :                                       
+[  45]        :                                       ; if left_click , then draw
+[  46]    013D: 83 FB 01                              cmp bx , 1
+[  47]    0140: 75 03                                 jne Step_2
+[  48]        :                                       
+[  49]    0142: E8 18 00                              call putpix ;call procedure
+[  50]        :                                       
+[  51]        :                                       
+[  52]    0145:                                       Step_2:
+[  53]        :                                       ; if right_click, then change color
+[  54]    0145: 83 FB 02                              cmp bx , 2
+[  55]    0148: 75 06                                 jne Step_3
+[  56]    014A: E8 39 00                              call inc_color
+[  57]    014D: E8 20 00                              call color_indicate
+[  58]        :                                       
+[  59]    0150:                                       Step_3:
+[  60]    0150: 83 FB 03                              cmp bx,3
+[  61]    0153: 75 E0                                 jne Next
+[  62]    0155: E8 37 00                              call dec_color
+[  63]    0158: E8 15 00                              call color_indicate
+[  64]        :                                       
+[  65]        :                                       
+[  66]    015B: EB D8                                 jmp Next
+[  67]        :                                       
+[  68]        :                                       
+[  69]        :                                       main endp
+[  70]        :                                       
+[  71]        :                                       
+[  72]        :                                       ;procedure to print
+[  73]    015D:                                       putpix proc
+[  74]        :                                       
+[  75]    015D: A0 11 00                              mov al, color  ;color of pixel
+[  76]    0160: B4 0C                                 mov ah, 0ch
+[  77]    0162: D1 E9                                 shr cx,1    ; cx will get double so we divide it by two
+[  78]    0164: CD 10                                 int 10h     ; set pixel.
+[  79]    0166: 41                                    inc cx
+[  80]    0167: CD 10                                 int 10h
+[  81]    0169: 42                                    inc dx
+[  82]    016A: CD 10                                 int 10h
+[  83]    016C: 49                                    dec cx
+[  84]    016D: CD 10                                 int 10h
+[  85]        :                                       
+[  86]    016F: C3                                    ret
+[  87]        :                                       putpix endp
+[  88]        :                                       ;**************************************************
+[  89]    0170:                                       color_indicate proc
+[  90]        :                                       ; ah = 0ah >> print character
+[  91]    0170: B4 0C                                 mov ah , 0ch
+[  92]    0172: A0 11 00                              mov al, color
+[  93]        :                                       
+[  94]    0175: 33 DB                                 xor bx, bx
+[  95]    0177: B9 07 00                              mov cx, 007h
+[  96]    017A: BA 07 00                              mov dx, 007h
+[  97]        :                                       
+[  98]    017D:                                       lineloop:
+[  99]    017D: CD 10                                 int 10h
+[ 100]    017F: A0 11 00                              mov al , color
+[ 101]    0182: 49                                    dec CX
+[ 102]    0183: 79 F8                                 jns lineloop
+[ 103]        :                                       ; draw another pixel.
+[ 104]        :                                       
+[ 105]    0185: C3                                    ret
+[ 106]        :                                       color_indicate endp
+[ 107]        :                                       
+[ 108]        :                                       ;*****************************************
+[ 109]    0186:                                       inc_color proc
+[ 110]    0186: A0 11 00                              mov al , color
+[ 111]    0189: FE C0                                 inc al
+[ 112]    018B: A2 11 00                              mov color , al
+[ 113]        :                                       
+[ 114]    018E: C3                                    ret
+[ 115]        :                                       inc_color endp
+[ 116]        :                                       
+[ 117]        :                                       ;******************************************
+[ 118]    018F:                                       dec_color proc
+[ 119]    018F: A0 11 00                              mov al , color
+[ 120]        :                                       ;dec al
+[ 121]    0192: 2C 01                                 sub al , 1
+[ 122]    0194: A2 11 00                              mov color , al
+[ 123]        :                                       
+[ 124]    0197: C3                                    ret
+[ 125]        :                                       dec_color endp
+[ 126]        :                                       
+[ 127]        :                                       ;******************************************
+[ 128]        :                                       
+[ 129]    0198:                                       show_cursor proc
+[ 130]    0198: B8 01 00                              mov ax, 1
+[ 131]    019B: CD 33                                 int 33h
+[ 132]        :                                       
+[ 133]    019D: C3                                    ret
+[ 134]        :                                       show_cursor endp
+[ 135]        :                                       ;*********************
+[ 136]        :                                       
+[ 137]    019E:                                       hide_cursor proc
+[ 138]    019E: B8 02 00                              mov ax, 2
+[ 139]    01A1: CD 33                                 int 33h
+[ 140]        :                                       
+[ 141]    01A3: C3                                    ret
+[ 142]        :                                       hide_cursor endp
+[ 143]        :                                       
+[ 144]        :                                       ;*********************
+[ 145]    01A4:                                       get_pos_stat proc
+[ 146]        :                                       
+[ 147]    01A4: B8 03 00                              mov ax , 3
+[ 148]    01A7: CD 33                                 int 33h
+[ 149]        :                                       
+[ 150]    01A9: C3                                    ret
+[ 151]        :                                       get_pos_stat endp
+[ 152]        :                                       ;********************
+[ 153]        :                                       
+[ 154]        :                                       code ends
+[ 155]        :                                       
+[ 156]        :                                       
+[ 157]        :                                       ;##################################################
+[ 158]        :                                       ;**************************************************
+[ 159]    01AA: BA 00 00                              lea dx, pkey
+[ 160]    01AD: B4 09                                 mov ah, 9
+[ 161]    01AF: CD 21                                 int 21h        ; output string at ds:dx
+[ 162]        :                                       
+[ 163]        :                                       ; wait for any key....
+[ 164]    01B1: B4 01                                 mov ah, 1
+[ 165]    01B3: CD 21                                 int 21h
+[ 166]        :                                       
+[ 167]    01B5: B8 00 4C                              mov ax, 4c00h ; exit to operating system.
+[ 168]    01B8: CD 21                                 int 21h
+[ 169]        :                                       ends
+[ 170]        :                                       
+[ 171]        :                                       end start ; set entry point and stop the assembler.
+[ 172]        :                                       
+[ 173]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: BA      -   bytes on last page (l.byte)
+0003: 01      -   bytes on last page (h.byte)
+0004: 02      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 02      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 00      -   SP - stack pointer (l.byte)
+0011: 01      -   SP - stack pointer (h.byte)
+0012: 12      -   check sum (l.byte)
+0013: 59      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: 12      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 01      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: 12      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================

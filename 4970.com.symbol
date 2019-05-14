@@ -1,0 +1,40 @@
+< THE SYMBOL TABLE >  4970.com  --  emu8086 assembler version: 4.08 
+===================================================================================================
+Name                     	Offset    	Size      	Type      	Segment   
+===================================================================================================
+MSG0                     	00103     	1         	VAR       	(NOSEG)   
+MSG1                     	0011D     	1         	VAR       	(NOSEG)   
+MSG2                     	00136     	1         	VAR       	(NOSEG)   
+MSG3                     	00151     	1         	VAR       	(NOSEG)   
+MSG4                     	0016C     	1         	VAR       	(NOSEG)   
+MSG5                     	001AD     	1         	VAR       	(NOSEG)   
+MSG6                     	001EF     	1         	VAR       	(NOSEG)   
+MSG7                     	001FE     	1         	VAR       	(NOSEG)   
+SPACE                    	0023F     	1         	VAR       	(NOSEG)   
+GRADES                   	00241     	1         	VAR       	(NOSEG)   
+CODE                     	00242     	-1        	LABEL     	(NOSEG)   
+MAIN                     	00242     	-1        	NEAR      	(NOSEG)   
+WRITE_GRD                	0029A     	-1        	NEAR      	(NOSEG)   
+PRINT                    	0029D     	-1        	LABEL     	(NOSEG)   
+EXIT                     	002C0     	-1        	LABEL     	(NOSEG)   
+WRITE_ID                 	002C4     	-1        	NEAR      	(NOSEG)   
+PRNT                     	002C7     	-1        	LABEL     	(NOSEG)   
+EXT                      	00304     	-1        	LABEL     	(NOSEG)   
+WRITE_ALL                	00308     	-1        	NEAR      	(NOSEG)   
+PRNT_ALL                 	0030B     	-1        	LABEL     	(NOSEG)   
+EXIT_ALL                 	00365     	-1        	LABEL     	(NOSEG)   
+READ_GRD                 	00369     	-1        	NEAR      	(NOSEG)   
+RD_INPUT                 	0036C     	-1        	LABEL     	(NOSEG)   
+READ_ID                  	00396     	-1        	NEAR      	(NOSEG)   
+RD_ID                    	00399     	-1        	LABEL     	(NOSEG)   
+SWAP_GRD                 	003DC     	-1        	NEAR      	(NOSEG)   
+SWAP_ID                  	003EB     	-1        	NEAR      	(NOSEG)   
+SORT                     	00412     	-1        	NEAR      	(NOSEG)   
+BUBBLE                   	00415     	-1        	LABEL     	(NOSEG)   
+SWAP                     	0042A     	-1        	LABEL     	(NOSEG)   
+NEXT                     	00435     	-1        	LABEL     	(NOSEG)   
+CLRSCR                   	00444     	-1        	NEAR      	(NOSEG)   
+===================================================================================================
+[ 5/14/2019  --  3:58:49 AM ] 
+< END >
+ 
