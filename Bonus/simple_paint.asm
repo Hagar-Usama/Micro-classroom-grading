@@ -24,6 +24,7 @@ int 33h
 
 ;useless for some reason
 call show_cursor
+;call inc_color
 
 ; if left_click , then draw 
 cmp bx , 1
@@ -40,6 +41,7 @@ call inc_color
 call color_indicate
 
 Step_3:
+;if click on both right and left
 cmp bx,3
 jne Next
 call dec_color
@@ -58,7 +60,14 @@ putpix proc
 mov al, color  ;color of pixel  
 mov ah, 0ch    
 shr cx,1    ; cx will get double so we divide it by two
-int 10h     ; set pixel.
+int 10h     ; set pixel. 
+inc cx
+int 10h
+inc dx
+int 10h 
+dec cx
+int 10h
+
 ret
 putpix endp 
 ;**************************************************
