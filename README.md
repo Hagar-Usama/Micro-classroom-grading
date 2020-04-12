@@ -84,6 +84,6 @@ Let's build a classroom grading system in Assembly!
 ---
 
 ## License
-![License](http://img.shields.io/:License-MIT-blue.svg?style=round-square)
+![License](http://img.shields.io/:License-GPL3-blue.svg?style=round-square)
 
-[MIT License](https://opensource.org/licenses/MIT "MIT")
+[GPL3 License](https://www.gnu.org/licenses/gpl-3.0.en.html "GPL3")
